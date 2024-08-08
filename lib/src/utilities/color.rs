@@ -27,6 +27,16 @@ impl Color {
     //     self / self.length() as f64 // needs #[derive(Clone, Copy)]
     // }
 
+    pub fn get_r(self) -> f64 {
+        self.red
+    }
+    pub fn get_g(self) -> f64 {
+        self.green
+    }
+    pub fn get_b(self) -> f64 {
+        self.blue
+    }
+
     pub fn write_color(&self, file: &mut File) -> std::io::Result<()> {
         let rbyte = (255.999 * self.red) as i32;
         let gbyte = (255.999 * self.green) as i32;

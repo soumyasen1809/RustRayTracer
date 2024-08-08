@@ -12,7 +12,7 @@ pub struct Vector3 {
 
 impl Vector3 {
     pub fn new(x: f64, y: f64, z: f64) -> Self {
-        Vector3 { x, y, z }
+        Self { x, y, z }
     }
 
     pub fn length(&self) -> f64 {
@@ -22,11 +22,21 @@ impl Vector3 {
     pub fn unit_vector(self) -> Self {
         self / self.length() // needs #[derive(Clone, Copy)]
     }
+
+    pub fn get_x(self) -> f64 {
+        self.x
+    }
+    pub fn get_y(self) -> f64 {
+        self.y
+    }
+    pub fn get_z(self) -> f64 {
+        self.z
+    }
 }
 
 impl Default for Vector3 {
     fn default() -> Self {
-        Vector3 {
+        Self {
             x: 0.0,
             y: 0.0,
             z: 0.0,
