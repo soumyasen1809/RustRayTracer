@@ -3,5 +3,19 @@
 version = 3
 
 [[package]]
+name = "lib"
+version = "0.1.0"
+
+[[package]]
+name = "project_bin"
+version = "0.1.0"
+dependencies = [
+ "lib",
+]
+
+[[package]]
 name = "ray_tracer"
 version = "0.1.0"
+dependencies = [
+ "lib",
+]
