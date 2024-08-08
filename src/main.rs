@@ -11,6 +11,7 @@ fn main() {
 
     writeln!(file, "P3\n{} {}\n255", image_width, image_height).unwrap();
     for y_index in 0..image_height {
+        println!("Remaining scanlines: {}", image_height - y_index); // Adding a Progress Indicator
         for x_index in 0..image_width {
             let r = x_index as f64 / (image_width - 1) as f64;
             let g = y_index as f64 / (image_height - 1) as f64;
@@ -23,4 +24,6 @@ fn main() {
             writeln!(file, "{} {} {}", ir, ig, ib).unwrap();
         }
     }
+
+    println!("Done!");
 }
