@@ -49,8 +49,8 @@ impl Neg for Vector3 {
 impl AddAssign for Vector3 {
     fn add_assign(&mut self, rhs: Self) {
         self.x += rhs.x;
-        self.y += rhs.x;
-        self.z += rhs.x;
+        self.y += rhs.y;
+        self.z += rhs.z;
     }
 }
 
