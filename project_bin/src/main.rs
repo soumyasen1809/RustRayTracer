@@ -6,7 +6,7 @@ fn main() {
 
     // Image
     let aspect_ratio: f64 = 16.0 / 9.0;
-    let image_width: i32 = 16;
+    let image_width: i32 = 384;
 
     // Calculate the image height, and ensure that it's at least 1.
     let mut image_height: i32 = (image_width as f64 / aspect_ratio) as i32;
@@ -15,9 +15,6 @@ fn main() {
     }
 
     // Camera
-    // The viewport is a virtual rectangle in the 3D world that contains
-    // the grid of image pixel locations.
-    // Viewport widths less than one are ok since they are real valued.
     let focal_length: f64 = 1.0;
     let viewport_height: f64 = 2.0;
     let viewport_width: f64 = viewport_height * (image_width as f64 / image_height as f64);
@@ -48,7 +45,7 @@ fn main() {
         for x_index in 0..image_width {
             let pixel_center: Point3 = pixel00_loc
                 + (pixel_delta_u * (x_index as f64))
-                + (pixel_delta_u * (y_index as f64));
+                + (pixel_delta_v * (y_index as f64));
 
             let ray_direction: Vector3 = (pixel_center - camera_center).as_vec();
             let ray_sent: Ray = Ray::new(camera_center, ray_direction);
