@@ -1,4 +1,5 @@
 use std::io::Write;
+use std::ops::Add;
 use std::{
     fs::File,
     ops::{AddAssign, Div, Mul, MulAssign /*Neg*/},
@@ -74,6 +75,17 @@ impl AddAssign for Color {
         self.red += rhs.red;
         self.green += rhs.green;
         self.blue += rhs.blue;
+    }
+}
+
+impl Add for Color {
+    type Output = Self;
+    fn add(self, rhs: Self) -> Self::Output {
+        Self {
+            red: self.red + rhs.red,
+            green: self.green + rhs.green,
+            blue: self.blue + rhs.blue,
+        }
     }
 }
 

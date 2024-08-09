@@ -1,17 +1,17 @@
 use super::vector3::Vector3;
-use std::ops::{Add, Neg};
+use std::ops::{Add, Neg, Sub};
 
-/// The Point Class
+/// The Point3 Class
 ///
 
 #[derive(Clone, Copy)]
-pub struct Point {
+pub struct Point3 {
     x: f64,
     y: f64,
     z: f64,
 }
 
-impl Point {
+impl Point3 {
     pub fn new(x: f64, y: f64, z: f64) -> Self {
         Self { x, y, z }
     }
@@ -25,9 +25,13 @@ impl Point {
     pub fn get_z(self) -> f64 {
         self.z
     }
+
+    pub fn as_vec(&self) -> Vector3 {
+        Vector3::new(self.x, self.y, self.z)
+    }
 }
 
-impl Default for Point {
+impl Default for Point3 {
     fn default() -> Self {
         Self {
             x: 0.0,
@@ -37,7 +41,7 @@ impl Default for Point {
     }
 }
 
-impl Neg for Point {
+impl Neg for Point3 {
     type Output = Self;
     fn neg(self) -> Self::Output {
         Self {
@@ -48,13 +52,46 @@ impl Neg for Point {
     }
 }
 
-impl Add<Vector3> for Point {
+impl Add for Point3 {
+    type Output = Self;
+    fn add(self, rhs: Self) -> Self::Output {
+        Self {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+            z: self.z + rhs.z,
+        }
+    }
+}
+
+impl Sub for Point3 {
+    type Output = Self;
+    fn sub(self, rhs: Self) -> Self::Output {
+        Self {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+            z: self.z - rhs.z,
+        }
+    }
+}
+
+impl Add<Vector3> for Point3 {
     type Output = Self;
     fn add(self, rhs: Vector3) -> Self::Output {
         Self {
-            x: self.x * rhs.get_x(),
-            y: self.y * rhs.get_y(),
-            z: self.z * rhs.get_z(),
+            x: self.x + rhs.get_x(),
+            y: self.y + rhs.get_y(),
+            z: self.z + rhs.get_z(),
+        }
+    }
+}
+
+impl Sub<Vector3> for Point3 {
+    type Output = Self;
+    fn sub(self, rhs: Vector3) -> Self::Output {
+        Self {
+            x: self.x - rhs.get_x(),
+            y: self.y - rhs.get_y(),
+            z: self.z - rhs.get_z(),
         }
     }
 }

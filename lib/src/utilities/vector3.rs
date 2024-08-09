@@ -1,4 +1,4 @@
-use std::ops::{AddAssign, Div, Mul, MulAssign, Neg};
+use std::ops::{Add, AddAssign, Div, Mul, MulAssign, Neg};
 
 /// The vec3 Class
 ///
@@ -61,6 +61,17 @@ impl AddAssign for Vector3 {
         self.x += rhs.x;
         self.y += rhs.y;
         self.z += rhs.z;
+    }
+}
+
+impl Add for Vector3 {
+    type Output = Self;
+    fn add(self, rhs: Self) -> Self::Output {
+        Self {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+            z: self.z + rhs.z,
+        }
     }
 }
 
