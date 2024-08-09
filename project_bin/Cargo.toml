@@ -1,0 +1,9 @@
+[package]
+name = "project_bin"
+version = "0.1.0"
+edition = "2021"
+license = "GNU GENERAL PUBLIC LICENSE"
+authors = ["Sen"]
+
+[dependencies]
+lib ={ path = "../lib"}
