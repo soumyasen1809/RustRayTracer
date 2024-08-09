@@ -1,4 +1,4 @@
-use std::ops::{Add, AddAssign, Div, Mul, MulAssign, Neg};
+use std::ops::{Add, AddAssign, Div, Mul, MulAssign, Neg, Sub};
 
 /// The vec3 Class
 ///
@@ -19,8 +19,8 @@ impl Vector3 {
         (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
     }
 
-    pub fn unit_vector(self) -> Self {
-        self / self.length() // needs #[derive(Clone, Copy)]
+    pub fn unit_vector(&self) -> Self {
+        *self / self.length() // needs #[derive(Clone, Copy)]
     }
 
     pub fn get_x(self) -> f64 {
@@ -31,6 +31,10 @@ impl Vector3 {
     }
     pub fn get_z(self) -> f64 {
         self.z
+    }
+
+    pub fn dot_prod(&self, rhs: Self) -> f64 {
+        (self.x * rhs.x) + (self.y * rhs.y) + (self.z * rhs.z)
     }
 }
 
@@ -75,6 +79,28 @@ impl Add for Vector3 {
     }
 }
 
+impl Sub for Vector3 {
+    type Output = Self;
+    fn sub(self, rhs: Self) -> Self::Output {
+        Self {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+            z: self.z - rhs.z,
+        }
+    }
+}
+
+impl Sub<f64> for Vector3 {
+    type Output = Self;
+    fn sub(self, rhs: f64) -> Self::Output {
+        Self {
+            x: self.x - rhs,
+            y: self.y - rhs,
+            z: self.z - rhs,
+        }
+    }
+}
+
 impl MulAssign for Vector3 {
     fn mul_assign(&mut self, rhs: Self) {
         self.x *= rhs.x;
@@ -95,6 +121,17 @@ impl Mul<f64> for Vector3 {
     }
 }
 
+impl Mul for Vector3 {
+    type Output = Self;
+    fn mul(self, rhs: Self) -> Self::Output {
+        Self {
+            x: self.x * rhs.x,
+            y: self.y * rhs.y,
+            z: self.z * rhs.z,
+        }
+    }
+}
+
 impl Div<f64> for Vector3 {
     type Output = Self;
     fn div(self, rhs: f64) -> Self::Output {
@@ -102,20 +139,6 @@ impl Div<f64> for Vector3 {
             x: self.x / rhs,
             y: self.y / rhs,
             z: self.z / rhs,
-        }
-    }
-}
-
-pub trait Dot {
-    fn dot_prod(&self, rhs: Self) -> Self;
-}
-
-impl Dot for Vector3 {
-    fn dot_prod(&self, rhs: Self) -> Self {
-        Self {
-            x: self.x * rhs.x,
-            y: self.y * rhs.y,
-            z: self.z * rhs.z,
         }
     }
 }

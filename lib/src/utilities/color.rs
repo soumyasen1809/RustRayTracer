@@ -2,7 +2,7 @@ use std::io::Write;
 use std::ops::Add;
 use std::{
     fs::File,
-    ops::{AddAssign, Div, Mul, MulAssign /*Neg*/},
+    ops::{AddAssign, Div, Mul, MulAssign},
 };
 
 /// The color Class
@@ -95,20 +95,6 @@ impl Div<f64> for Color {
             red: self.red / rhs,
             green: self.green / rhs,
             blue: self.blue / rhs,
-        }
-    }
-}
-
-pub trait Dot {
-    fn dot_prod(&self, rhs: Self) -> Self;
-}
-
-impl Dot for Color {
-    fn dot_prod(&self, rhs: Self) -> Self {
-        Self {
-            red: self.red * rhs.red,
-            green: self.green * rhs.green,
-            blue: self.blue * rhs.blue,
         }
     }
 }
