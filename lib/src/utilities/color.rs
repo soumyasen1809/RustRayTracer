@@ -20,14 +20,6 @@ impl Color {
         Color { red, green, blue }
     }
 
-    // pub fn length(&self) -> f64 {
-    //     ((self.red * self.red + self.green * self.green + self.blue * self.blue) as f64).sqrt()
-    // }
-
-    // pub fn unit_vector(self) -> Self {
-    //     self / self.length() as f64 // needs #[derive(Clone, Copy)]
-    // }
-
     pub fn get_r(self) -> f64 {
         self.red
     }
@@ -56,19 +48,6 @@ impl Default for Color {
         }
     }
 }
-
-// https://doc.rust-lang.org/std/ops/trait.Neg.html
-// Color can not be negative
-// impl Neg for Color {
-//     type Output = Self;
-//     fn neg(self) -> Self::Output {
-//         Self {
-//             red: -self.red,
-//             green: -self.green,
-//             blue: -self.blue,
-//         }
-//     }
-// }
 
 impl AddAssign for Color {
     fn add_assign(&mut self, rhs: Self) {

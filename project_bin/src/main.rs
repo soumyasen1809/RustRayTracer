@@ -4,9 +4,6 @@ use std::{fs::File, io::Write};
 fn main() {
     // https://raytracing.github.io/books/RayTracingInOneWeekend.html
 
-    // let image_height = 256;
-    // let image_width = 256;
-
     // Image
     let aspect_ratio: f64 = 16.0 / 9.0;
     let image_width: i32 = 400;
@@ -49,12 +46,6 @@ fn main() {
     for y_index in 0..image_height {
         println!("Remaining scanlines: {}", image_height - y_index); // Adding a Progress Indicator
         for x_index in 0..image_width {
-            // let r = x_index as f64 / (image_width - 1) as f64;
-            // let g = y_index as f64 / (image_height - 1) as f64;
-            // let b = 0.0;
-
-            // let pixel_color = Color::new(r, g, b);
-
             let pixel_center: Point3 =
                 pixel00_loc + (pixel_delta_u * x_index as f64) + (pixel_delta_u * y_index as f64);
 
