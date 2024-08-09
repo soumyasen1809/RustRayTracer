@@ -1,21 +1,22 @@
 use lib::utilities::{color::Color, point::Point3, ray::Ray, vector3::Vector3};
 use std::{fs::File, io::Write};
 
+const ASPECT_RATIO: f64 = 16.0 / 9.0;
+const FOCAL_LENGTH: f64 = 1.0;
+
 fn main() {
     // https://raytracing.github.io/books/RayTracingInOneWeekend.html
 
     // Image
-    let aspect_ratio: f64 = 16.0 / 9.0;
     let image_width: i32 = 384;
 
     // Calculate the image height, and ensure that it's at least 1.
-    let mut image_height: i32 = (image_width as f64 / aspect_ratio) as i32;
+    let mut image_height: i32 = (image_width as f64 / ASPECT_RATIO) as i32;
     if image_height < 1 {
         image_height = 1
     }
 
     // Camera
-    let focal_length: f64 = 1.0;
     let viewport_height: f64 = 2.0;
     let viewport_width: f64 = viewport_height * (image_width as f64 / image_height as f64);
     let camera_center: Point3 = Point3::new(0.0, 0.0, 0.0);
@@ -30,7 +31,7 @@ fn main() {
 
     // Calculate the location of the upper left pixel
     let viewport_origin: Point3 = camera_center
-        - Vector3::new(0.0, 0.0, focal_length)
+        - Vector3::new(0.0, 0.0, FOCAL_LENGTH)
         - (viewport_u / 2.0)
         - (viewport_v / 2.0);
 
