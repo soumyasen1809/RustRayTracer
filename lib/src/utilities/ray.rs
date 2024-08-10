@@ -27,13 +27,13 @@ impl Ray {
 
     fn sphere_hit(&self, center: &Point3, radius: f64) -> f64 {
         let dist_center_origin: Vector3 = (*center - self.get_origin()).as_vec();
-        let a: f64 = self.get_direction().dot_prod(self.get_direction());
-        let b: f64 = -2.0 * (self.get_direction().dot_prod(dist_center_origin));
-        let c: f64 = (dist_center_origin.dot_prod(dist_center_origin)) - (radius * radius);
+        let a: f64 = self.get_direction().length_squared();
+        let h: f64 = self.get_direction().dot_prod(dist_center_origin);
+        let c: f64 = (dist_center_origin.length_squared()) - (radius * radius);
 
-        let discriminant: f64 = (b * b) - (4.0 * (a * c)); // For finding roots of a quadratic eqn b^2 -4ac = 0
+        let discriminant: f64 = (h * h) - (a * c); // For finding roots of a quadratic eqn b^2 -4ac = 0 (here h = -b/2)
         if discriminant >= 0.0 {
-            return (-b - discriminant.sqrt()) / (2.0 * a);
+            return (h - discriminant.sqrt()) / a;
         } else {
             return -1.0;
         }
