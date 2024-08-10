@@ -39,7 +39,6 @@ impl Ray {
         }
     }
 
-    /// Implements a simple gradient
     pub fn ray_color(&self) -> Color {
         // Check if sphere is hit: color it red
         let sphere_hit_color = self.sphere_hit(&Point3::new(0.0, 0.0, -1.0), 0.5);
@@ -54,7 +53,7 @@ impl Ray {
             )) * 0.5;
         }
 
-        // Color the background blue
+        // Color the background blue - Implements a simple gradient
         let unit_direction: Vector3 = self.get_direction().unit_vector();
         let a: f64 = 0.5 * (unit_direction.get_y() + 1.0);
 
