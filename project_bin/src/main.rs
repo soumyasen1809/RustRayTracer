@@ -1,4 +1,10 @@
-use lib::utilities::{color::Color, point::Point3, ray::Ray, vector3::Vector3};
+use lib::utilities::{
+    color::Color,
+    point::Point3,
+    ray::Ray,
+    sphere::{HittableObjects, Sphere},
+    vector3::Vector3,
+};
 use std::{fs::File, io::Write};
 
 const ASPECT_RATIO: f64 = 16.0 / 9.0;
@@ -15,6 +21,11 @@ fn main() {
     if image_height < 1 {
         image_height = 1
     }
+
+    // World
+    let mut world: HittableObjects = HittableObjects::new();
+    world.add(Box::new(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5)));
+    world.add(Box::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0)));
 
     // Camera
     let viewport_height: f64 = 2.0;
@@ -50,7 +61,7 @@ fn main() {
 
             let ray_direction: Vector3 = (pixel_center - camera_center).as_vec();
             let ray_sent: Ray = Ray::new(camera_center, ray_direction);
-            let pixel_color: Color = ray_sent.ray_color();
+            let pixel_color: Color = ray_sent.ray_color(&world);
 
             let write_res = pixel_color.write_color(&mut file);
             match write_res {

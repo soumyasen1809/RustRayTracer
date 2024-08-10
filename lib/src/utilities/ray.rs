@@ -1,4 +1,6 @@
-use super::{color::Color, point::Point3, vector3::Vector3};
+use super::{
+    color::Color, hit_record::HitRecord, point::Point3, sphere::Hittable, vector3::Vector3,
+};
 
 /// The Ray Class
 ///
@@ -25,32 +27,15 @@ impl Ray {
         self.direction
     }
 
-    fn sphere_hit(&self, center: &Point3, radius: f64) -> f64 {
-        let dist_center_origin: Vector3 = (*center - self.get_origin()).as_vec();
-        let a: f64 = self.get_direction().length_squared();
-        let h: f64 = self.get_direction().dot_prod(dist_center_origin);
-        let c: f64 = (dist_center_origin.length_squared()) - (radius * radius);
-
-        let discriminant: f64 = (h * h) - (a * c); // For finding roots of a quadratic eqn b^2 -4ac = 0 (here h = -b/2)
-        if discriminant >= 0.0 {
-            return (h - discriminant.sqrt()) / a;
-        } else {
-            return -1.0;
-        }
-    }
-
-    pub fn ray_color(&self) -> Color {
-        // Check if sphere is hit: color it red
-        let sphere_hit_color = self.sphere_hit(&Point3::new(0.0, 0.0, -1.0), 0.5);
-        if sphere_hit_color > 0.0 {
-            let normal_vec: Vector3 = (self.position(sphere_hit_color).as_vec()
-                - Vector3::new(0.0, 0.0, -1.0))
-            .unit_vector();
+    pub fn ray_color(&self, world: &dyn Hittable) -> Color {
+        let mut record: HitRecord = HitRecord::new(); // needed since to mut this, we need to initialize it
+        if world.hit(&self, 0.0, std::f64::INFINITY, &mut record) {
             return (Color::new(
-                normal_vec.get_x() + 1.0,
-                normal_vec.get_y() + 1.0,
-                normal_vec.get_z() + 1.0,
-            )) * 0.5;
+                record.normal.get_x(),
+                record.normal.get_y(),
+                record.normal.get_z(),
+            ) + Color::new(1.0, 1.0, 1.0))
+                * 0.5;
         }
 
         // Color the background blue - Implements a simple gradient
