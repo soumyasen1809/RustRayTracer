@@ -5,8 +5,8 @@ pub struct Interval {
 
 impl Interval {
     // https://stackoverflow.com/questions/26549480/how-do-i-declare-a-static-field-in-a-struct-in-rust
-    const EMPTY: Interval = Interval::new(std::f64::INFINITY, std::f64::NEG_INFINITY);
-    const UNIVERSE: Interval = Interval::new(std::f64::NEG_INFINITY, std::f64::INFINITY);
+    // const EMPTY: Interval = Interval::new(std::f64::INFINITY, std::f64::NEG_INFINITY);
+    // const UNIVERSE: Interval = Interval::new(std::f64::NEG_INFINITY, std::f64::INFINITY);
 
     pub const fn new(min: f64, max: f64) -> Self {
         // Needs to add it as const fn, since EMPTY const needs a const function
