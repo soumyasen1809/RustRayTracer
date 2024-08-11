@@ -1,4 +1,4 @@
-use super::{hit_record::HitRecord, point::Point3, ray::Ray, vector3::Vector3};
+use super::{hit_record::HitRecord, interval::Interval, point::Point3, ray::Ray, vector3::Vector3};
 
 pub struct Sphere {
     center: Point3,
@@ -41,11 +41,11 @@ impl HittableObjects {
 }
 
 pub trait Hittable {
-    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64, record: &mut HitRecord) -> bool;
+    fn hit(&self, ray: &Ray, ray_interval: Interval, record: &mut HitRecord) -> bool;
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64, record: &mut HitRecord) -> bool {
+    fn hit(&self, ray: &Ray, ray_interval: Interval, record: &mut HitRecord) -> bool {
         let dist_center_origin: Vector3 = (self.center - ray.get_origin()).as_vec();
         let a: f64 = ray.get_direction().length_squared();
         let h: f64 = ray.get_direction().dot_prod(dist_center_origin);
@@ -59,9 +59,9 @@ impl Hittable for Sphere {
         // Find the nearest root that lies in the acceptable range.
         let sqrt_discriminant: f64 = discriminant.sqrt();
         let mut root: f64 = (h - sqrt_discriminant) / a;
-        if (root <= t_min) || (root >= t_max) {
+        if !ray_interval.contains(root) {
             root = (h + sqrt_discriminant) / a;
-            if (root <= t_min) || (root >= t_max) {
+            if !ray_interval.contains(root) {
                 return false;
             }
         }
@@ -76,13 +76,15 @@ impl Hittable for Sphere {
 }
 
 impl Hittable for HittableObjects {
-    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64, record: &mut HitRecord) -> bool {
+    fn hit(&self, ray: &Ray, ray_interval: Interval, record: &mut HitRecord) -> bool {
+        let t_min: f64 = ray_interval.min;
+        let t_max: f64 = ray_interval.max;
         let mut temp_record: HitRecord = record.clone(); // needed since to mut this, we need to initialize it
         let mut hit_anything: bool = false;
         let mut closest_so_far: f64 = t_max;
 
         for object in self.objects.iter() {
-            if object.hit(ray, t_min, closest_so_far, &mut temp_record) {
+            if object.hit(ray, Interval::new(t_min, closest_so_far), &mut temp_record) {
                 hit_anything = true;
                 closest_so_far = record.parameter;
                 *record = temp_record;

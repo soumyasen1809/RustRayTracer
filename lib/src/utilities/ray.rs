@@ -1,5 +1,6 @@
 use super::{
-    color::Color, hit_record::HitRecord, point::Point3, sphere::Hittable, vector3::Vector3,
+    color::Color, hit_record::HitRecord, interval::Interval, point::Point3, sphere::Hittable,
+    vector3::Vector3,
 };
 
 /// The Ray Class
@@ -29,7 +30,7 @@ impl Ray {
 
     pub fn ray_color(&self, world: &dyn Hittable) -> Color {
         let mut record: HitRecord = HitRecord::new(); // needed since to mut this, we need to initialize it
-        if world.hit(&self, 0.0, std::f64::INFINITY, &mut record) {
+        if world.hit(&self, Interval::new(0.0, std::f64::INFINITY), &mut record) {
             return (Color::new(
                 record.normal.get_x(),
                 record.normal.get_y(),
