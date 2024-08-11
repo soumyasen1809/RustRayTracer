@@ -9,7 +9,7 @@ impl Sphere {
     pub fn new(center: Point3, radius: f64) -> Self {
         Self {
             center,
-            radius: radius.max(0.0), // (std::fmax(0,radius)
+            radius: radius.max(0.0), // std::fmax(0,radius)
         }
     }
 

@@ -1,7 +1,4 @@
-use super::{
-    color::Color, hit_record::HitRecord, interval::Interval, point::Point3, sphere::Hittable,
-    vector3::Vector3,
-};
+use super::{point::Point3, vector3::Vector3};
 
 /// The Ray Class
 ///
@@ -26,27 +23,6 @@ impl Ray {
     }
     pub fn get_direction(&self) -> Vector3 {
         self.direction
-    }
-
-    pub fn ray_color(&self, world: &dyn Hittable) -> Color {
-        let mut record: HitRecord = HitRecord::new(); // needed since to mut this, we need to initialize it
-        if world.hit(&self, Interval::new(0.0, std::f64::INFINITY), &mut record) {
-            return (Color::new(
-                record.normal.get_x(),
-                record.normal.get_y(),
-                record.normal.get_z(),
-            ) + Color::new(1.0, 1.0, 1.0))
-                * 0.5;
-        }
-
-        // Color the background blue - Implements a simple gradient
-        let unit_direction: Vector3 = self.get_direction().unit_vector();
-        let a: f64 = 0.5 * (unit_direction.get_y() + 1.0);
-
-        // Linear blending or Linear interpolation
-        // blendedValue = (1−a)⋅startValue+a⋅endValue
-        // Returns a blue blended color
-        (Color::new(1.0, 1.0, 1.0) * (1.0 - a)) + (Color::new(0.5, 0.7, 1.0) * a)
     }
 }
 
