@@ -100,7 +100,7 @@ impl Camera {
         }
         let mut record: HitRecord = HitRecord::new(); // needed since to mut this, we need to initialize it
         if world.hit(ray, Interval::new(0.001, std::f64::INFINITY), &mut record) {
-            let ray_bounce_direction: Vector3 = record.normal.random_on_hemisphere();
+            let ray_bounce_direction: Vector3 = record.normal + Vector3::random_unit_vector();
             return (Self::ray_color(
                 // note recursion here
                 &Ray::new(record.point, ray_bounce_direction),

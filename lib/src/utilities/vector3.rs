@@ -73,7 +73,7 @@ impl Vector3 {
 
     /// With a random vector in the unit sphere we need to normalize it to
     /// get a vector on the unit sphere
-    fn random_unit_vector() -> Self {
+    pub fn random_unit_vector() -> Self {
         Self::random_in_unit_sphere().unit_vector()
     }
 
