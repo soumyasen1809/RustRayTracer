@@ -30,12 +30,25 @@ impl Color {
         self.blue
     }
 
-    pub fn write_color(&self, file: &mut File) -> std::io::Result<()> {
+    pub fn write_color(&mut self, file: &mut File) -> std::io::Result<()> {
+        // Apply a linear to gamma transform for gamma
+        self.red = Self::linear_to_gamma_transformation(self.red);
+        self.green = Self::linear_to_gamma_transformation(self.green);
+        self.blue = Self::linear_to_gamma_transformation(self.blue);
+
+        // Translate the [0,1] component values to the byte range [0,255].
         let rbyte = (256.0 * self.red.clamp(0.0, 0.999)) as i32;
         let gbyte = (256.0 * self.green.clamp(0.0, 0.999)) as i32;
         let bbyte = (256.0 * self.blue.clamp(0.0, 0.999)) as i32;
 
         writeln!(file, "{} {} {}", rbyte, gbyte, bbyte)
+    }
+
+    fn linear_to_gamma_transformation(linear_component: f64) -> f64 {
+        if linear_component > 0.0 {
+            return linear_component.sqrt();
+        }
+        return 0.0;
     }
 }
 
