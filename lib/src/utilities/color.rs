@@ -31,9 +31,9 @@ impl Color {
     }
 
     pub fn write_color(&self, file: &mut File) -> std::io::Result<()> {
-        let rbyte = (255.999 * self.red) as i32;
-        let gbyte = (255.999 * self.green) as i32;
-        let bbyte = (255.999 * self.blue) as i32;
+        let rbyte = (256.0 * self.red.clamp(0.0, 0.999)) as i32;
+        let gbyte = (256.0 * self.green.clamp(0.0, 0.999)) as i32;
+        let bbyte = (256.0 * self.blue.clamp(0.0, 0.999)) as i32;
 
         writeln!(file, "{} {} {}", rbyte, gbyte, bbyte)
     }

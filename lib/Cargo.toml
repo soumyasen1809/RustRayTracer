@@ -6,3 +6,4 @@ license = "GNU GENERAL PUBLIC LICENSE"
 authors = ["Sen"]
 
 [dependencies]
+rand="0.3.14"
