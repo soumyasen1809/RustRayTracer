@@ -7,6 +7,7 @@ use lib::utilities::{
 const ASPECT_RATIO: f64 = 16.0 / 9.0;
 const IMAGE_WIDTH: i32 = 384;
 const SAMPLES_PER_PIXEL: i32 = 100;
+const MAX_DEPTH: i32 = 50;
 
 fn main() {
     // https://raytracing.github.io/books/RayTracingInOneWeekend.html
@@ -21,5 +22,6 @@ fn main() {
     cam.aspect_ratio = ASPECT_RATIO;
     cam.image_width = IMAGE_WIDTH;
     cam.samples_per_pixel = SAMPLES_PER_PIXEL;
+    cam.max_depth = MAX_DEPTH;
     cam.render(&world);
 }
