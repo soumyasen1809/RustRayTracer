@@ -99,7 +99,7 @@ impl Camera {
             return Color::default();
         }
         let mut record: HitRecord = HitRecord::new(); // needed since to mut this, we need to initialize it
-        if world.hit(ray, Interval::new(0.0, std::f64::INFINITY), &mut record) {
+        if world.hit(ray, Interval::new(0.001, std::f64::INFINITY), &mut record) {
             let ray_bounce_direction: Vector3 = record.normal.random_on_hemisphere();
             return (Self::ray_color(
                 // note recursion here
