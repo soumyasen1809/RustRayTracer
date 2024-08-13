@@ -32,10 +32,10 @@ impl Default for Lambertian {
 impl Material for Lambertian {
     fn scatter(
         &self,
-        incoming_ray: Ray,
+        _incoming_ray: Ray,
         record: HitRecord,
-        mut attenuation: Color,
-        mut scattered_ray: Ray,
+        mut _attenuation: Color,
+        mut _scattered_ray: Ray,
     ) -> bool {
         // Lambertian scatter
         let mut scatter_direction: Vector3 = record.normal + Vector3::random_unit_vector();
@@ -45,8 +45,8 @@ impl Material for Lambertian {
             scatter_direction = record.normal;
         }
 
-        scattered_ray = Ray::new(record.point, scatter_direction);
-        attenuation = self.albedo;
+        _scattered_ray = Ray::new(record.point, scatter_direction);
+        _attenuation = self.albedo;
 
         true
     }
@@ -75,13 +75,13 @@ impl Material for Metal {
         &self,
         incoming_ray: Ray,
         record: HitRecord,
-        mut attenuation: Color,
-        mut scattered_ray: Ray,
+        mut _attenuation: Color,
+        mut _scattered_ray: Ray,
     ) -> bool {
         // Metal material with reflectance function
         let reflect_direction: Vector3 = incoming_ray.get_direction().reflection(&record.normal);
-        scattered_ray = Ray::new(record.point, reflect_direction);
-        attenuation = self.albedo;
+        _scattered_ray = Ray::new(record.point, reflect_direction);
+        _attenuation = self.albedo;
 
         true
     }

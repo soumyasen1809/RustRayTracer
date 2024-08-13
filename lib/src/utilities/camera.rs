@@ -99,14 +99,14 @@ impl Camera {
             return Color::default();
         }
         let material_default = Lambertian::default();
-        let mut record: HitRecord = HitRecord::new(
+        let record: HitRecord = HitRecord::new(
             Point3::default(),
             Vector3::default(),
             0.0,
             false,
             &material_default,
         ); // needed since to mut this, we need to initialize it
-        if world.hit(ray, Interval::new(0.001, std::f64::INFINITY), &mut record) {
+        if world.hit(ray, Interval::new(0.001, std::f64::INFINITY), record) {
             // let ray_bounce_direction: Vector3 = record.normal + Vector3::random_unit_vector();
             // return (Self::ray_color(
             //     // note recursion here

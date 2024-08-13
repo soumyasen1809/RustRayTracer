@@ -4,7 +4,7 @@ use super::{
 };
 
 pub trait Hittable {
-    fn hit(&self, ray: &Ray, ray_interval: Interval, record: &mut HitRecord) -> bool;
+    fn hit(&self, ray: &Ray, ray_interval: Interval, record: HitRecord) -> bool;
 }
 
 pub struct Sphere {
@@ -32,7 +32,7 @@ impl Sphere {
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, ray: &Ray, ray_interval: Interval, record: &mut HitRecord) -> bool {
+    fn hit<'a>(&'a self, ray: &Ray, ray_interval: Interval, mut record: HitRecord<'a>) -> bool {
         let dist_center_origin: Vector3 = (self.center - ray.get_origin()).as_vec();
         let a: f64 = ray.get_direction().length_squared();
         let h: f64 = ray.get_direction().dot_prod(dist_center_origin);
@@ -82,18 +82,18 @@ impl HittableObjects {
 }
 
 impl Hittable for HittableObjects {
-    fn hit(&self, ray: &Ray, ray_interval: Interval, mut record: &mut HitRecord) -> bool {
+    fn hit(&self, ray: &Ray, ray_interval: Interval, mut record: HitRecord) -> bool {
         let t_min: f64 = ray_interval.min;
         let t_max: f64 = ray_interval.max;
-        let mut temp_record: HitRecord = *record; // needed since to mut this, we need to initialize it
+        let temp_record: HitRecord = record; // needed since to mut this, we need to initialize it
         let mut hit_anything: bool = false;
         let mut closest_so_far: f64 = t_max;
 
         for object in self.objects.iter() {
-            if object.hit(ray, Interval::new(t_min, closest_so_far), &mut temp_record) {
+            if object.hit(ray, Interval::new(t_min, closest_so_far), temp_record) {
                 hit_anything = true;
                 closest_so_far = record.parameter;
-                record = &mut temp_record;
+                record = temp_record;
             }
         }
 
