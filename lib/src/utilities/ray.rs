@@ -3,6 +3,7 @@ use super::{point::Point3, vector3::Vector3};
 /// The Ray Class
 ///
 
+#[derive(Clone, Copy)]
 pub struct Ray {
     origin: Point3,
     direction: Vector3,

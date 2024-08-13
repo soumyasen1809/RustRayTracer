@@ -45,6 +45,12 @@ impl Vector3 {
         *self / self.length() // needs #[derive(Clone, Copy)]
     }
 
+    /// Returns true if the vector is very close to zero in all dimensions
+    pub fn near_zero(&self) -> bool {
+        let s: f64 = 1e-8;
+        (self.x.abs() < s) && (self.y.abs() < s) && (self.z.abs() < s)
+    }
+
     pub fn get_x(self) -> f64 {
         self.x
     }
@@ -88,6 +94,10 @@ impl Vector3 {
                 break random_vec; // to return from loop
             }
         }
+    }
+
+    pub fn reflection(&self, normal_vec: &Self) -> Self {
+        return *self - ((*normal_vec * (self.dot_prod(*normal_vec))) * 2.0);
     }
 }
 

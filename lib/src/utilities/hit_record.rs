@@ -1,20 +1,28 @@
-use super::{point::Point3, ray::Ray, vector3::Vector3};
+use super::{material::Material, point::Point3, ray::Ray, vector3::Vector3};
 
 #[derive(Clone, Copy)]
-pub struct HitRecord {
+pub struct HitRecord<'a> {
     pub point: Point3,
     pub normal: Vector3,
     pub parameter: f64,
     pub is_face_front: bool,
+    pub material: &'a dyn Material,
 }
 
-impl HitRecord {
-    pub fn new() -> Self {
+impl<'a> HitRecord<'a> {
+    pub fn new(
+        point: Point3,
+        normal: Vector3,
+        parameter: f64,
+        is_face_front: bool,
+        material: &'a dyn Material,
+    ) -> Self {
         Self {
-            point: Point3::default(),
-            normal: Vector3::default(),
-            parameter: f64::default(),
-            is_face_front: bool::default(),
+            point,
+            normal,
+            parameter,
+            is_face_front,
+            material,
         }
     }
     pub fn set_face_normal(&mut self, ray: &Ray, outward_normal: &Vector3) {

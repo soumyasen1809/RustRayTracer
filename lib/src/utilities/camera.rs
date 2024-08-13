@@ -1,8 +1,8 @@
 use rand::Rng;
 
 use super::{
-    color::Color, hit_record::HitRecord, interval::Interval, point::Point3, ray::Ray,
-    sphere::Hittable, vector3::Vector3,
+    color::Color, geometry::Hittable, hit_record::HitRecord, interval::Interval,
+    material::Lambertian, point::Point3, ray::Ray, vector3::Vector3,
 };
 use std::{fs::File, io::Write};
 
@@ -98,15 +98,32 @@ impl Camera {
         if depth <= 0 {
             return Color::default();
         }
-        let mut record: HitRecord = HitRecord::new(); // needed since to mut this, we need to initialize it
+        let material_default = Lambertian::default();
+        let mut record: HitRecord = HitRecord::new(
+            Point3::default(),
+            Vector3::default(),
+            0.0,
+            false,
+            &material_default,
+        ); // needed since to mut this, we need to initialize it
         if world.hit(ray, Interval::new(0.001, std::f64::INFINITY), &mut record) {
-            let ray_bounce_direction: Vector3 = record.normal + Vector3::random_unit_vector();
-            return (Self::ray_color(
-                // note recursion here
-                &Ray::new(record.point, ray_bounce_direction),
-                depth - 1,
-                world,
-            )) * 0.5;
+            // let ray_bounce_direction: Vector3 = record.normal + Vector3::random_unit_vector();
+            // return (Self::ray_color(
+            //     // note recursion here
+            //     &Ray::new(record.point, ray_bounce_direction),
+            //     depth - 1,
+            //     world,
+            // )) * 0.5;
+            let scattered_ray: Ray = Ray::default();
+            let attenuation: Color = Color::default();
+
+            if record
+                .material
+                .scatter(*ray, record, attenuation, scattered_ray)
+            {
+                return (Self::ray_color(&scattered_ray, depth - 1, world)) * attenuation;
+            }
+            return Color::new(0.0, 0.0, 0.0);
         }
 
         // Color the background blue - Implements a simple gradient
