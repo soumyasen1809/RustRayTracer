@@ -1,8 +1,8 @@
 use rand::Rng;
 
 use super::{
-    color::Color, geometry::Hittable, hit_record::HitRecord, interval::Interval,
-    material::Lambertian, point::Point3, ray::Ray, vector3::Vector3,
+    color::Color, geometry::Hittable, hit_record::HitRecord, interval::Interval, point::Point3,
+    ray::Ray, vector3::Vector3,
 };
 use std::{fs::File, io::Write};
 
@@ -43,7 +43,7 @@ impl Camera {
                 let mut pixel_color: Color = Color::new(0.0, 0.0, 0.0);
                 for _ in 0..self.samples_per_pixel {
                     let ray_sent: Ray = self.get_ray(x_index, y_index);
-                    pixel_color += Self::ray_color(&ray_sent, self.max_depth, world);
+                    pixel_color += Self::ray_color(ray_sent, self.max_depth, world);
                 }
 
                 let write_res = (pixel_color * self.pixel_samples_scale).write_color(&mut file);
@@ -90,7 +90,7 @@ impl Camera {
         self.pixel00_loc = viewport_origin + ((self.pixel_delta_u + self.pixel_delta_v) * 0.5);
     }
 
-    fn ray_color(ray: &Ray, depth: i32, world: &dyn Hittable) -> Color {
+    fn ray_color(ray: Ray, depth: i32, world: &dyn Hittable) -> Color {
         // If we've exceeded the ray bounce limit, no more light is gathered.
         // Problem: Recursion long enough to blow the stack
         // Solution: To guard against that, let's limit the maximum recursion depth,
@@ -98,15 +98,8 @@ impl Camera {
         if depth <= 0 {
             return Color::default();
         }
-        let material_default = Lambertian::default();
-        let record: HitRecord = HitRecord::new(
-            Point3::default(),
-            Vector3::default(),
-            0.0,
-            false,
-            &material_default,
-        ); // needed since to mut this, we need to initialize it
-        if world.hit(ray, Interval::new(0.001, std::f64::INFINITY), record) {
+        let mut record: HitRecord = HitRecord::default(); // needed since to mut this, we need to initialize it
+        if world.hit(ray, Interval::new(0.001, std::f64::INFINITY), &mut record) {
             // let ray_bounce_direction: Vector3 = record.normal + Vector3::random_unit_vector();
             // return (Self::ray_color(
             //     // note recursion here
@@ -119,10 +112,17 @@ impl Camera {
 
             if record
                 .material
-                .scatter(*ray, record, attenuation, scattered_ray)
+                .clone()
+                .unwrap()
+                .scatter(ray, record, attenuation, scattered_ray)
             {
-                return (Self::ray_color(&scattered_ray, depth - 1, world)) * attenuation;
+                return (Self::ray_color(scattered_ray, depth - 1, world)) * attenuation;
             }
+            // if let Some(in_mat_rec) = record.material.clone() {
+            //     if in_mat_rec.scatter(ray, record, attenuation, scattered_ray) {
+            //         return (Self::ray_color(scattered_ray, depth - 1, world)) * attenuation;
+            //     }
+            // }
             return Color::new(0.0, 0.0, 0.0);
         }
 

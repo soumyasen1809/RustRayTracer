@@ -12,12 +12,12 @@ pub trait Material {
 }
 
 pub struct Lambertian {
-    albedo: Color,
+    pub albedo: Color,
 }
 
 impl Lambertian {
-    pub fn new(albedo: &Color) -> Self {
-        Self { albedo: *albedo }
+    pub fn new(albedo: Color) -> Self {
+        Self { albedo }
     }
 }
 
@@ -57,8 +57,8 @@ pub struct Metal {
 }
 
 impl Metal {
-    pub fn new(albedo: &Color) -> Self {
-        Self { albedo: *albedo }
+    pub fn new(albedo: Color) -> Self {
+        Self { albedo: albedo }
     }
 }
 
@@ -79,7 +79,10 @@ impl Material for Metal {
         mut _scattered_ray: Ray,
     ) -> bool {
         // Metal material with reflectance function
-        let reflect_direction: Vector3 = incoming_ray.get_direction().reflection(&record.normal);
+        let reflect_direction: Vector3 = incoming_ray
+            .get_direction()
+            .unit_vector()
+            .reflection(&record.normal);
         _scattered_ray = Ray::new(record.point, reflect_direction);
         _attenuation = self.albedo;
 
