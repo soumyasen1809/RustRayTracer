@@ -49,5 +49,5 @@ fn main() {
     cam.image_width = IMAGE_WIDTH;
     cam.samples_per_pixel = SAMPLES_PER_PIXEL;
     cam.max_depth = MAX_DEPTH;
-    cam.render(&world);
+    cam.render(world);
 }
