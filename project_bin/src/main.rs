@@ -2,7 +2,7 @@ use lib::utilities::{
     camera::Camera,
     color::Color,
     geometry::{Hittable, Sphere},
-    material::{Lambertian, Metal},
+    material::{Dielectric, Lambertian, Metal},
     point::Point3,
 };
 
@@ -19,7 +19,7 @@ fn main() {
 
     let material_ground = Box::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
     let material_center = Box::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
-    let material_left = Box::new(Metal::new(Color::new(0.8, 0.8, 0.8), 0.3));
+    let material_left = Box::new(Dielectric::new(1.50));
     let material_right = Box::new(Metal::new(Color::new(0.8, 0.6, 0.2), 1.0));
 
     world.push(Box::new(Sphere::new(

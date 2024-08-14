@@ -13,7 +13,7 @@ pub trait Material {
 
 #[derive(Clone)]
 pub struct Lambertian {
-    pub albedo: Color,
+    albedo: Color,
 }
 
 impl Lambertian {
@@ -88,5 +88,43 @@ impl Material for Metal {
             });
         }
         None
+    }
+}
+
+#[derive(Clone)]
+pub struct Dielectric {
+    refractive_index: f64,
+}
+
+impl Dielectric {
+    pub fn new(refractive_index: f64) -> Self {
+        Self { refractive_index }
+    }
+}
+
+impl Default for Dielectric {
+    fn default() -> Self {
+        Self {
+            refractive_index: 1.0,
+        }
+    }
+}
+
+impl Material for Dielectric {
+    fn scatter(&self, incoming_ray: Ray, record: &HitRecord) -> Option<Scatter> {
+        let attenuation: Color = Color::new(1.0, 1.0, 1.0);
+        let r_index: f64 = if record.is_face_front {
+            1.0 / self.refractive_index
+        } else {
+            self.refractive_index
+        };
+        let unit_direction: Vector3 = incoming_ray.get_direction().unit_vector();
+        let refracted_ray: Vector3 = unit_direction.refraction(&record.normal, r_index);
+        let scattered_ray: Ray = Ray::new(record.point, refracted_ray);
+
+        Some(Scatter {
+            scattered_ray,
+            attenuation,
+        })
     }
 }

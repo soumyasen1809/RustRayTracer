@@ -92,33 +92,9 @@ impl Camera {
 
     fn ray_color(ray: Ray, depth: i32, world: &[Box<dyn Hittable>]) -> Color {
         // If we've exceeded the ray bounce limit, no more light is gathered.
-        // Problem: Recursion long enough to blow the stack
-        // Solution: To guard against that, let's limit the maximum recursion depth,
-        // returning no light contribution at the maximum depth.
         if depth <= 0 {
             return Color::default();
         }
-        // let mut record: HitRecord = HitRecord::default(); // needed since to mut this, we need to initialize it
-        // if world.hit(ray, Interval::new(0.001, std::f64::INFINITY), &mut record) {
-        //     // let ray_bounce_direction: Vector3 = record.normal + Vector3::random_unit_vector();
-        //     // return (Self::ray_color(
-        //     //     // note recursion here
-        //     //     &Ray::new(record.point, ray_bounce_direction),
-        //     //     depth - 1,
-        //     //     world,
-        //     // )) * 0.5;
-        //     let scattered_ray: Ray = Ray::default();
-        //     let attenuation: Color = Color::default();
-
-        //     if record
-        //         .material
-        //         .clone()
-        //         .unwrap()
-        //         .scatter(ray, record, attenuation, scattered_ray)
-        //     {
-        //         return (Self::ray_color(scattered_ray, depth - 1, world)) * attenuation;
-        //     }
-        //     return Color::new(0.0, 0.0, 0.0);
 
         if let Some(hit) = world.hit(ray, Interval::new(0.001, std::f64::INFINITY)) {
             if let Some(scatter) = hit.material.scatter(ray, &hit) {

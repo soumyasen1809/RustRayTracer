@@ -7,6 +7,30 @@ pub trait Hittable {
     fn hit(&self, ray: Ray, ray_interval: Interval) -> Option<HitRecord>;
 }
 
+impl<T> Hittable for T
+where
+    T: AsRef<[Box<dyn Hittable>]>,
+{
+    fn hit(&self, ray: Ray, ray_interval: Interval) -> Option<HitRecord> {
+        let t_min: f64 = ray_interval.min;
+        let t_max: f64 = ray_interval.max;
+
+        let mut closest_so_far: Option<HitRecord> = None;
+
+        for object in self.as_ref().iter() {
+            let t_max_local = closest_so_far
+                .as_ref()
+                .map(|hit| hit.parameter)
+                .unwrap_or(t_max);
+            if let Some(record) = object.hit(ray, Interval::new(t_min, t_max_local)) {
+                closest_so_far = Some(record);
+            }
+        }
+
+        closest_so_far
+    }
+}
+
 pub struct Sphere {
     center: Point3,
     radius: f64,
@@ -65,29 +89,5 @@ impl Hittable for Sphere {
             material,
             parameter,
         ))
-    }
-}
-
-impl<T> Hittable for T
-where
-    T: AsRef<[Box<dyn Hittable>]>,
-{
-    fn hit(&self, ray: Ray, ray_interval: Interval) -> Option<HitRecord> {
-        let t_min: f64 = ray_interval.min;
-        let t_max: f64 = ray_interval.max;
-
-        let mut closest_so_far: Option<HitRecord> = None;
-
-        for object in self.as_ref().iter() {
-            let t_max_local = closest_so_far
-                .as_ref()
-                .map(|hit| hit.parameter)
-                .unwrap_or(t_max);
-            if let Some(record) = object.hit(ray, Interval::new(t_min, t_max_local)) {
-                closest_so_far = Some(record);
-            }
-        }
-
-        closest_so_far
     }
 }
