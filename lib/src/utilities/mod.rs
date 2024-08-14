@@ -1,8 +1,9 @@
 pub mod camera;
 pub mod color;
+pub mod geometry;
 pub mod hit_record;
 pub mod interval;
+pub mod material;
 pub mod point;
 pub mod ray;
-pub mod sphere;
 pub mod vector3;

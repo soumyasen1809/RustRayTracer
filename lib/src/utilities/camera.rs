@@ -1,16 +1,17 @@
 use rand::Rng;
 
 use super::{
-    color::Color, hit_record::HitRecord, interval::Interval, point::Point3, ray::Ray,
-    sphere::Hittable, vector3::Vector3,
+    color::Color, geometry::Hittable, interval::Interval, material::Scatter, point::Point3,
+    ray::Ray, vector3::Vector3,
 };
 use std::{fs::File, io::Write};
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct Camera {
     pub aspect_ratio: f64,
     pub image_width: i32,
     pub samples_per_pixel: i32,
+    pub max_depth: i32, // Maximum number of ray bounces
     image_height: i32,
     camera_center: Point3,
     pixel00_loc: Point3,      // Location of pixel 0, 0
@@ -29,7 +30,7 @@ impl Camera {
         }
     }
 
-    pub fn render(&mut self, world: &dyn Hittable) {
+    pub fn render(&mut self, world: Vec<Box<dyn Hittable>>) {
         self.initialize();
 
         // Render and write to file
@@ -42,7 +43,7 @@ impl Camera {
                 let mut pixel_color: Color = Color::new(0.0, 0.0, 0.0);
                 for _ in 0..self.samples_per_pixel {
                     let ray_sent: Ray = self.get_ray(x_index, y_index);
-                    pixel_color += Self::ray_color(&ray_sent, world);
+                    pixel_color += Self::ray_color(ray_sent, self.max_depth, &world[..]);
                 }
 
                 let write_res = (pixel_color * self.pixel_samples_scale).write_color(&mut file);
@@ -89,24 +90,51 @@ impl Camera {
         self.pixel00_loc = viewport_origin + ((self.pixel_delta_u + self.pixel_delta_v) * 0.5);
     }
 
-    fn ray_color(ray: &Ray, world: &dyn Hittable) -> Color {
-        let mut record: HitRecord = HitRecord::new(); // needed since to mut this, we need to initialize it
-        if world.hit(ray, Interval::new(0.0, std::f64::INFINITY), &mut record) {
-            return (Color::new(
-                record.normal.get_x(),
-                record.normal.get_y(),
-                record.normal.get_z(),
-            ) + Color::new(1.0, 1.0, 1.0))
-                * 0.5;
+    fn ray_color(ray: Ray, depth: i32, world: &[Box<dyn Hittable>]) -> Color {
+        // If we've exceeded the ray bounce limit, no more light is gathered.
+        // Problem: Recursion long enough to blow the stack
+        // Solution: To guard against that, let's limit the maximum recursion depth,
+        // returning no light contribution at the maximum depth.
+        if depth <= 0 {
+            return Color::default();
+        }
+        // let mut record: HitRecord = HitRecord::default(); // needed since to mut this, we need to initialize it
+        // if world.hit(ray, Interval::new(0.001, std::f64::INFINITY), &mut record) {
+        //     // let ray_bounce_direction: Vector3 = record.normal + Vector3::random_unit_vector();
+        //     // return (Self::ray_color(
+        //     //     // note recursion here
+        //     //     &Ray::new(record.point, ray_bounce_direction),
+        //     //     depth - 1,
+        //     //     world,
+        //     // )) * 0.5;
+        //     let scattered_ray: Ray = Ray::default();
+        //     let attenuation: Color = Color::default();
+
+        //     if record
+        //         .material
+        //         .clone()
+        //         .unwrap()
+        //         .scatter(ray, record, attenuation, scattered_ray)
+        //     {
+        //         return (Self::ray_color(scattered_ray, depth - 1, world)) * attenuation;
+        //     }
+        //     return Color::new(0.0, 0.0, 0.0);
+
+        if let Some(hit) = world.hit(ray, Interval::new(0.001, std::f64::INFINITY)) {
+            if let Some(scatter) = hit.material.scatter(ray, &hit) {
+                let Scatter {
+                    scattered_ray,
+                    attenuation,
+                } = scatter;
+                return (Self::ray_color(scattered_ray, depth - 1, world)) * attenuation;
+            } else {
+                return Color::new(0.0, 0.0, 0.0);
+            }
         }
 
-        // Color the background blue - Implements a simple gradient
+        // Color the background blue - Linear blending
         let unit_direction: Vector3 = ray.get_direction().unit_vector();
         let a: f64 = 0.5 * (unit_direction.get_y() + 1.0);
-
-        // Linear blending or Linear interpolation
-        // blendedValue = (1−a)⋅startValue+a⋅endValue
-        // Returns a blue blended color
         (Color::new(1.0, 1.0, 1.0) * (1.0 - a)) + (Color::new(0.5, 0.7, 1.0) * a)
     }
 
@@ -127,7 +155,10 @@ impl Camera {
     /// Returns the vector to a random point in the
     /// [-.5,-.5] to [+.5,+.5] unit square.
     fn sample_square() -> Vector3 {
-        let random_num: f64 = rand::thread_rng().r#gen();
-        Vector3::new(random_num - 0.5, random_num - 0.5, 0.0)
+        Vector3::new(
+            rand::thread_rng().r#gen::<f64>() - 0.5,
+            rand::thread_rng().r#gen::<f64>() - 0.5,
+            0.0,
+        )
     }
 }
