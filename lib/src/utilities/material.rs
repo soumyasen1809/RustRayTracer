@@ -100,6 +100,12 @@ impl Dielectric {
     pub fn new(refractive_index: f64) -> Self {
         Self { refractive_index }
     }
+
+    pub fn reflectance(cos_theta: f64, r_index: f64) -> f64 {
+        let mut r0: f64 = (1.0 - r_index) / (1.0 + r_index);
+        r0 = r0 * r0;
+        r0 + ((1.0 - r0) * ((1.0 - cos_theta).powi(5)))
+    }
 }
 
 impl Default for Dielectric {
@@ -119,8 +125,17 @@ impl Material for Dielectric {
             self.refractive_index
         };
         let unit_direction: Vector3 = incoming_ray.get_direction().unit_vector();
-        let refracted_ray: Vector3 = unit_direction.refraction(&record.normal, r_index);
-        let scattered_ray: Ray = Ray::new(record.point, refracted_ray);
+
+        let cos_theta: f64 = (-unit_direction.dot_prod(record.normal)).min(1.0); // std::fmin
+        let sin_theta: f64 = (1.0 - (cos_theta * cos_theta)).sqrt();
+        let can_refract: bool = r_index * sin_theta <= 1.0;
+
+        let ray_direction: Vector3 = if can_refract {
+            unit_direction.refraction(&record.normal, r_index)
+        } else {
+            unit_direction.reflection(&record.normal)
+        };
+        let scattered_ray: Ray = Ray::new(record.point, ray_direction);
 
         Some(Scatter {
             scattered_ray,
