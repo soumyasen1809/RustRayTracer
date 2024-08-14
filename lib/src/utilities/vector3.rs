@@ -99,6 +99,15 @@ impl Vector3 {
     pub fn reflection(&self, normal_vec: &Self) -> Self {
         return *self - ((*normal_vec * (self.dot_prod(*normal_vec))) * 2.0);
     }
+
+    pub fn refraction(&self, normal_vec: &Self, ratio_refractive_index: f64) -> Self {
+        let cos_theta: f64 = (-self.dot_prod(*normal_vec)).min(1.0); // std::fmin
+        let ray_out_perp: Vector3 = (*self + (*normal_vec * cos_theta)) * ratio_refractive_index;
+        let ray_out_par: Vector3 =
+            *normal_vec * (-(((1.0 - ray_out_perp.length_squared()).abs()).sqrt()));
+
+        ray_out_par + ray_out_perp
+    }
 }
 
 impl Default for Vector3 {

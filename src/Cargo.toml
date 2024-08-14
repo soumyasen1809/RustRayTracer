@@ -1,5 +1,5 @@
 [package]
-name = "project_bin"
+name = "bin"
 version = "0.1.0"
 edition = "2021"
 license = "GNU GENERAL PUBLIC LICENSE"

@@ -10,14 +10,13 @@ authors = ["Sen"]
 lib ={ path = "lib"}    # needed for the tests to work
 
 [[bin]]
-name = "project_bin"
+name = "bin"
 path = "src/main.rs"
 
 # Check https://rust-classes.com/chapter_4_3
 [workspace]
 members = [
     "lib",
-    "project_bin",
 ]
 resolver = "2"
 
