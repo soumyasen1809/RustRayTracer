@@ -12,6 +12,7 @@ pub struct Camera {
     pub image_width: i32,
     pub samples_per_pixel: i32,
     pub max_depth: i32, // Maximum number of ray bounces
+    pub vertical_field_of_view: f64,
     image_height: i32,
     camera_center: Point3,
     pixel00_loc: Point3,      // Location of pixel 0, 0
@@ -26,6 +27,7 @@ impl Camera {
             aspect_ratio: 1.0,
             image_width: 100,
             samples_per_pixel: 10,
+            vertical_field_of_view: 90.0,
             ..Default::default() // this is possible using the derive(Default)
         }
     }
@@ -68,7 +70,9 @@ impl Camera {
         self.camera_center = Point3::new(0.0, 0.0, 0.0);
 
         // Camera
-        let viewport_height: f64 = 2.0;
+        let focal_length: f64 = 1.0;
+        let theta: f64 = self.vertical_field_of_view.to_radians();
+        let viewport_height: f64 = 2.0 * focal_length * (theta / 2.0).tan();
         let viewport_width: f64 =
             viewport_height * (self.image_width as f64 / self.image_height as f64);
 
@@ -81,7 +85,6 @@ impl Camera {
         self.pixel_delta_v = viewport_v / (self.image_height as f64);
 
         // Calculate the location of the upper left pixel
-        let focal_length: f64 = 1.0;
         let viewport_origin: Point3 = self.camera_center
             - Vector3::new(0.0, 0.0, focal_length)
             - (viewport_u / 2.0)

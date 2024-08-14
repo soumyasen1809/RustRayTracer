@@ -10,6 +10,7 @@ const ASPECT_RATIO: f64 = 16.0 / 9.0;
 const IMAGE_WIDTH: i32 = 384;
 const SAMPLES_PER_PIXEL: i32 = 100;
 const MAX_DEPTH: i32 = 50;
+const VERTICAL_FOV: f64 = 60.0;
 
 fn main() {
     // https://raytracing.github.io/books/RayTracingInOneWeekend.html
@@ -20,7 +21,7 @@ fn main() {
     let material_ground = Box::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
     let material_center = Box::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
     let material_left = Box::new(Dielectric::new(1.33));
-    let material_right = Box::new(Metal::new(Color::new(0.8, 0.6, 0.2), 1.0));
+    let material_right = Box::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.7));
     let material_bubble = Box::new(Dielectric::new(1.0 / 1.33));
 
     world.push(Box::new(Sphere::new(
@@ -55,5 +56,6 @@ fn main() {
     cam.image_width = IMAGE_WIDTH;
     cam.samples_per_pixel = SAMPLES_PER_PIXEL;
     cam.max_depth = MAX_DEPTH;
+    cam.vertical_field_of_view = VERTICAL_FOV; // Zooms in/out of the image
     cam.render(world);
 }
