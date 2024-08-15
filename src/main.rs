@@ -12,8 +12,8 @@ use lib::utilities::{
 const NUMBER_BALLS: i32 = 5;
 
 const ASPECT_RATIO: f64 = 16.0 / 9.0;
-const IMAGE_WIDTH: i32 = 640;
-const SAMPLES_PER_PIXEL: i32 = 500;
+const IMAGE_WIDTH: i32 = 160;
+const SAMPLES_PER_PIXEL: i32 = 100;
 const MAX_DEPTH: i32 = 50;
 const VERTICAL_FOV: f64 = 40.0;
 
@@ -70,7 +70,7 @@ fn main() {
     // Scene - big balls with Glass material
     let material_glass = Box::new(Dielectric::new(1.0 / 1.55));
     world.push(Box::new(Sphere::new(
-        Point3::new(-8.0, 1.0, 0.0),
+        Point3::new(8.0, 1.0, 0.0),
         1.0,
         material_glass,
     )));

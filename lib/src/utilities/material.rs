@@ -7,7 +7,7 @@ pub struct Scatter {
 }
 
 // https://github.com/ebkalderon/ray-tracing-in-one-weekend/commits/master/?before=afc5b8807ba4a342b09c83361968e7ddc284fc12+70
-pub trait Material {
+pub trait Material: Send + Sync {
     fn scatter(&self, incoming_ray: Ray, record: &HitRecord) -> Option<Scatter>;
 }
 

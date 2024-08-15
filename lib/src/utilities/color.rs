@@ -1,4 +1,5 @@
 use std::io::Write;
+use std::iter::Sum;
 use std::ops::Add;
 use std::{
     fs::File,
@@ -80,6 +81,12 @@ impl Add for Color {
             green: self.green + rhs.green,
             blue: self.blue + rhs.blue,
         }
+    }
+}
+
+impl Sum for Color {
+    fn sum<I: Iterator<Item = Self>>(iter: I) -> Self {
+        iter.fold(Color::default(), |a, b| a + b)
     }
 }
 
