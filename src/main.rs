@@ -12,8 +12,8 @@ use lib::utilities::{
 const NUMBER_BALLS: i32 = 5;
 
 const ASPECT_RATIO: f64 = 16.0 / 9.0;
-const IMAGE_WIDTH: i32 = 160;
-const SAMPLES_PER_PIXEL: i32 = 100;
+const IMAGE_WIDTH: i32 = 1600;
+const SAMPLES_PER_PIXEL: i32 = 200;
 const MAX_DEPTH: i32 = 50;
 const VERTICAL_FOV: f64 = 40.0;
 

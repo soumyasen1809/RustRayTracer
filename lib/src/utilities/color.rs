@@ -86,6 +86,11 @@ impl Add for Color {
 
 impl Sum for Color {
     fn sum<I: Iterator<Item = Self>>(iter: I) -> Self {
+        // iter.fold() is a method in Rust that allows you to
+        // accumulate or reduce the elements of an iterator into a single value.
+        // init: The initial value of the accumulator, which is passed to
+        // the closure as the first argument in the first iteration.
+        // E.g.: Summing a list: numbers.iter().fold(0, |a, &b| a + b);
         iter.fold(Color::default(), |a, b| a + b)
     }
 }

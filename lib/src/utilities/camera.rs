@@ -56,26 +56,30 @@ impl Camera {
     pub fn render(&mut self, world: Vec<Box<dyn Hittable>>) {
         self.initialize();
 
-        let mut pixel_color_vec: Vec<Color> = Vec::new();
-
         // Render and write to file
         let file_path = "image_test.ppm";
         let mut file = File::create(&file_path).unwrap();
         writeln!(file, "P3\n{} {}\n255", self.image_width, self.image_height).unwrap();
-        for y_index in 0..self.image_height {
-            println!("Remaining scanlines: {}", self.image_height - y_index); // Adding a Progress Indicator
-            for x_index in 0..self.image_width {
-                let pixel_color: Color = (0..self.samples_per_pixel)
-                    .into_par_iter()
-                    .map(|_| {
-                        let ray_sent: Ray = self.get_ray(x_index, y_index);
-                        Self::ray_color(ray_sent, self.max_depth, &world[..])
-                    })
-                    .sum(); // need to implement sum trait for Color
 
-                pixel_color_vec.push(pixel_color);
-            }
-        }
+        let pixel_color_vec: Vec<Color> = (0..self.image_height)
+            .into_par_iter()
+            .flat_map(|y_index| {
+                // If we use a .map(..) here, we will get output as Vec<Vec<Color>> instead
+                (0..self.image_width)
+                    .into_par_iter()
+                    .map(|x_index| {
+                        let pixel_color: Color = (0..self.samples_per_pixel)
+                            .into_par_iter()
+                            .map(|_| {
+                                let ray_sent: Ray = self.get_ray(x_index, y_index);
+                                Self::ray_color(ray_sent, self.max_depth, &world[..])
+                            })
+                            .sum(); // need to implement sum trait for Color
+                        return pixel_color; // Return the Color from the map closure
+                    })
+                    .collect::<Vec<Color>>() // Collect the inner Vec<Color>
+            })
+            .collect(); // Collect the outer Vec<Color>
 
         for pixel in pixel_color_vec.iter() {
             let write_res = (*pixel * self.pixel_samples_scale).write_color(&mut file);
