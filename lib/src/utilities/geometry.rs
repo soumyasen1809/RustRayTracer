@@ -3,13 +3,13 @@ use super::{
     vector3::Vector3,
 };
 
-pub trait Hittable {
+pub trait Hittable: Send + Sync {
     fn hit(&self, ray: Ray, ray_interval: Interval) -> Option<HitRecord>;
 }
 
 impl<T> Hittable for T
 where
-    T: AsRef<[Box<dyn Hittable>]>,
+    T: AsRef<[Box<dyn Hittable>]> + Send + Sync,
 {
     fn hit(&self, ray: Ray, ray_interval: Interval) -> Option<HitRecord> {
         let t_min: f64 = ray_interval.min;

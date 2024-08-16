@@ -7,3 +7,4 @@ authors = ["Sen"]
 
 [dependencies]
 rand="0.3.14"
+rayon = "1.10.0"

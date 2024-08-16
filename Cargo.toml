@@ -9,6 +9,7 @@ authors = ["Sen"]
 [dependencies]
 lib ={ path = "lib"}    # needed for the tests to work
 rand="0.3.14"
+rayon = "1.10.0"
 
 [[bin]]
 name = "bin"
