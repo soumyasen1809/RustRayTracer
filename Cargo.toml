@@ -9,9 +9,6 @@ authors = ["Sen"]
 [dependencies]
 # Your dependencies here
 lib ={ path = "lib"}    # needed for the tests to work
-rand="0.3.14"
-rayon = "1.10.0"
-serde_json = "1.0.125"
 
 [dev-dependencies]
 # Dependencies needed only for testing

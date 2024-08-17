@@ -51,6 +51,7 @@ version = "0.1.0"
 dependencies = [
  "rand 0.3.23",
  "rayon",
+ "serde_json",
 ]
 
 [[package]]
@@ -126,9 +127,6 @@ name = "ray_tracer"
 version = "0.1.0"
 dependencies = [
  "lib",
- "rand 0.3.23",
- "rayon",
- "serde_json",
 ]
 
 [[package]]

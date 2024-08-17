@@ -6,4 +6,5 @@ pub mod interval;
 pub mod material;
 pub mod point;
 pub mod ray;
+pub mod scenes;
 pub mod vector3;
