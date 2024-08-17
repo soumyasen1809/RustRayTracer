@@ -1,5 +1,35 @@
 # RustRayTracer
 
+<!-- See: https://github.com/KPMGE/KPMGE/blob/main/README.md -->
+<table align="center">
+  <tr>
+    <td align="center" width="96">
+      <a href="#rust">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/rust/rust-original.svg" width="48" height="48"
+          alt="Rust" />
+      </a>
+      <br>Rust
+    <td align="center" width="96">
+      <a href="#git">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Git_icon.svg/1200px-Git_icon.svg.png"
+          width="48" height="48" alt="Git" />
+      </a>
+      <br>Git
+    </td>
+    <td align="center" width="96">
+      <img src="https://user-images.githubusercontent.com/25181517/192108374-8da61ba1-99ec-41d7-80b8-fb2f7c0a4948.png"
+        width="48" height="48" alt="GitHub" />
+      <br>Github
+    </td>
+    <td align="center" width="96">
+      <a href="#" target="_blank"> <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" alt="webpack" width="40"
+          height="40" /> </a>
+      <br>Linux
+    </td>
+  </tr>
+</table>
+
 ## About
 This is a simple ray-tracer implementation in Rust of [Peter Shirley's "Ray Tracing In One Weekend"](https://raytracing.github.io/books/RayTracingInOneWeekend.html) book. This is the first of the series:
 
@@ -29,4 +59,3 @@ Every commit in the code implements a particular chapter. In this way it's easy 
 
 ## License
 This project is licensed under the GNU GENERAL PUBLIC license. See the LICENSE file for more details.
-

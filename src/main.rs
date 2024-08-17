@@ -15,92 +15,22 @@ use rayon::prelude::*;
 const NUMBER_BALLS: i32 = 5;
 
 const ASPECT_RATIO: f64 = 16.0 / 9.0;
-const IMAGE_WIDTH: i32 = 800;
-const SAMPLES_PER_PIXEL: i32 = 100;
-const MAX_DEPTH: i32 = 50;
+const IMAGE_WIDTH: i32 = 1600;
+const SAMPLES_PER_PIXEL: i32 = 200;
+const MAX_DEPTH: i32 = 80;
 const VERTICAL_FOV: f64 = 40.0;
 
 const SCENE_FILE_PATH: &str = "scene_data.json";
+
+fn translate_color_to_scale(color_component: f64) -> f64 {
+    color_component.clamp(0.0, 256.0) / 256.0
+}
 
 fn main() {
     // https://raytracing.github.io/books/RayTracingInOneWeekend.html
 
     // World
     let mut world: Vec<Box<dyn Hittable>> = Vec::new();
-
-    // ------------------------------------------------------
-
-    let scenes_file_path = SCENE_FILE_PATH.to_owned();
-    let file = fs::File::open(scenes_file_path).expect("Could not open file");
-    let json_data: HashMap<String, Vec<HashMap<String, serde_json::Value>>> =
-        serde_json::from_reader(file).expect("File is not proper JSON");
-    // the JSON structure has an array of “Ball” objects,
-    // so the json_data is of type: HashMap<String, Vec<HashMap<String, serde_json::Value>>>
-    // HashMap<String: this is the "Ball" string
-    // .. Vec<Hashmap<String,Value : this contains the array of the Ball objects which is inturn
-    //  a hashmap of String -> "color" and Values -> {"r": 255, "g": 0, "b": 0},
-    let json_parse_ball = json_data.get("Ball").expect("Cant read Ball data");
-
-    for ball in json_parse_ball.iter() {
-        {
-            if let Some(material_str) = ball["material"]["type"].as_str() {
-                // ["type"].as_str() needed else output is: Object {"type": String("lambertian")}
-
-                if material_str == "lambertian" {
-                    let color_obj = Color::new(
-                        ball["color"]["r"].as_f64().unwrap_or_default(),
-                        ball["color"]["g"].as_f64().unwrap_or_default(),
-                        ball["color"]["b"].as_f64().unwrap_or_default(),
-                    );
-                    let material_obj = Box::new(Lambertian::new(color_obj));
-
-                    let center_obj = Point3::new(
-                        ball["center"]["x"].as_f64().unwrap_or_default(),
-                        ball["center"]["y"].as_f64().unwrap_or_default(),
-                        ball["center"]["z"].as_f64().unwrap_or_default(),
-                    );
-                    let radius_obj = ball["radius"].as_f64().unwrap_or_default();
-
-                    world.push(Box::new(Sphere::new(center_obj, radius_obj, material_obj)));
-                }
-
-                if material_str == "metal" {
-                    let color_obj = Color::new(
-                        ball["color"]["r"].as_f64().unwrap_or_default(),
-                        ball["color"]["g"].as_f64().unwrap_or_default(),
-                        ball["color"]["b"].as_f64().unwrap_or_default(),
-                    );
-                    let fuzz_obj = ball["material"]["fuzz"].as_f64().unwrap_or_default();
-                    let material_obj = Box::new(Metal::new(color_obj, fuzz_obj));
-
-                    let center_obj = Point3::new(
-                        ball["center"]["x"].as_f64().unwrap_or_default(),
-                        ball["center"]["y"].as_f64().unwrap_or_default(),
-                        ball["center"]["z"].as_f64().unwrap_or_default(),
-                    );
-                    let radius_obj = ball["radius"].as_f64().unwrap_or_default();
-
-                    world.push(Box::new(Sphere::new(center_obj, radius_obj, material_obj)));
-                }
-
-                if material_str == "dielectric" {
-                    let rf_index_obj = ball["material"]["ref_idx"].as_f64().unwrap_or_default();
-                    let material_obj = Box::new(Dielectric::new(rf_index_obj));
-
-                    let center_obj = Point3::new(
-                        ball["center"]["x"].as_f64().unwrap_or_default(),
-                        ball["center"]["y"].as_f64().unwrap_or_default(),
-                        ball["center"]["z"].as_f64().unwrap_or_default(),
-                    );
-                    let radius_obj = ball["radius"].as_f64().unwrap_or_default();
-
-                    world.push(Box::new(Sphere::new(center_obj, radius_obj, material_obj)));
-                }
-            }
-        }
-    }
-
-    // ------------------------------------------------------
 
     // Scene - ground
     let material_ground = Box::new(Lambertian::new(Color::new(0.8, 0.8, 0.8)));
@@ -189,6 +119,71 @@ fn main() {
         1.0,
         material_metal,
     )));
+
+    // -------------------------FROM JSON-----------------------------
+
+    let scenes_file_path = SCENE_FILE_PATH.to_owned();
+    let file = fs::File::open(scenes_file_path).expect("Could not open file");
+    let json_data: HashMap<String, Vec<HashMap<String, serde_json::Value>>> =
+        serde_json::from_reader(file).expect("File is not proper JSON");
+    let json_parse_ball = json_data.get("Ball").expect("Can't read Ball data");
+
+    for ball in json_parse_ball.iter() {
+        {
+            if let Some(material_str) = ball["material"]["type"].as_str() {
+                if material_str == "lambertian" {
+                    let color_obj = Color::new(
+                        translate_color_to_scale(ball["color"]["r"].as_f64().unwrap_or_default()),
+                        translate_color_to_scale(ball["color"]["g"].as_f64().unwrap_or_default()),
+                        translate_color_to_scale(ball["color"]["b"].as_f64().unwrap_or_default()),
+                    );
+                    let material_obj = Box::new(Lambertian::new(color_obj));
+
+                    let center_obj = Point3::new(
+                        ball["center"]["x"].as_f64().unwrap_or_default(),
+                        ball["center"]["y"].as_f64().unwrap_or_default(),
+                        ball["center"]["z"].as_f64().unwrap_or_default(),
+                    );
+                    let radius_obj = ball["radius"].as_f64().unwrap_or_default();
+
+                    world.push(Box::new(Sphere::new(center_obj, radius_obj, material_obj)));
+                } else if material_str == "metal" {
+                    let color_obj = Color::new(
+                        translate_color_to_scale(ball["color"]["r"].as_f64().unwrap_or_default()),
+                        translate_color_to_scale(ball["color"]["g"].as_f64().unwrap_or_default()),
+                        translate_color_to_scale(ball["color"]["b"].as_f64().unwrap_or_default()),
+                    );
+                    let fuzz_obj = ball["material"]["fuzz"].as_f64().unwrap_or_default();
+                    let material_obj = Box::new(Metal::new(color_obj, fuzz_obj));
+
+                    let center_obj = Point3::new(
+                        ball["center"]["x"].as_f64().unwrap_or_default(),
+                        ball["center"]["y"].as_f64().unwrap_or_default(),
+                        ball["center"]["z"].as_f64().unwrap_or_default(),
+                    );
+                    let radius_obj = ball["radius"].as_f64().unwrap_or_default();
+
+                    world.push(Box::new(Sphere::new(center_obj, radius_obj, material_obj)));
+                } else if material_str == "dielectric" {
+                    let rf_index_obj = ball["material"]["ref_idx"].as_f64().unwrap_or_default();
+                    let material_obj = Box::new(Dielectric::new(rf_index_obj));
+
+                    let center_obj = Point3::new(
+                        ball["center"]["x"].as_f64().unwrap_or_default(),
+                        ball["center"]["y"].as_f64().unwrap_or_default(),
+                        ball["center"]["z"].as_f64().unwrap_or_default(),
+                    );
+                    let radius_obj = ball["radius"].as_f64().unwrap_or_default();
+
+                    world.push(Box::new(Sphere::new(center_obj, radius_obj, material_obj)));
+                } else {
+                    println!("Wrong Material");
+                }
+            }
+        }
+    }
+
+    // ------------------------------------------------------
 
     // Camera
     let mut cam: Camera = Camera::new();
