@@ -11,12 +11,11 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
-    - uses: actions/checkout@v4
+      uses: actions/checkout@v4
     - name: Build
       run: cargo build --verbose
     - name: Run tests
@@ -24,9 +23,7 @@ jobs:
     - name: Run
       run: cargo run --verbose
 
-  
   lint:
-  
     runs-on: ubuntu-latest
 
     steps:
