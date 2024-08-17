@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout code
     - uses: actions/checkout@v4
     - name: Build
       run: cargo build --verbose
@@ -22,3 +23,22 @@ jobs:
       run: cargo test --verbose
     - name: Run
       run: cargo run --verbose
+
+  
+  lint:
+  
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+    - name: Run cargo check
+      run: cargo check
+    - name: Run rustfmt
+      run: cargo fmt -- --check
+    - name: Run clippy
+      run: cargo clippy -- -D warnings
