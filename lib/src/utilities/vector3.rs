@@ -97,7 +97,7 @@ impl Vector3 {
     }
 
     pub fn reflection(&self, normal_vec: &Self) -> Self {
-        return *self - ((*normal_vec * (self.dot_prod(*normal_vec))) * 2.0);
+        *self - ((*normal_vec * (self.dot_prod(*normal_vec))) * 2.0)
     }
 
     pub fn refraction(&self, normal_vec: &Self, ratio_refractive_index: f64) -> Self {

@@ -60,8 +60,7 @@ fn main() {
                             rand::thread_rng().r#gen::<f64>(),
                             rand::thread_rng().r#gen::<f64>(),
                         )));
-                        return Box::new(Sphere::new(center, 0.2, material_lambertian))
-                            as Box<dyn Hittable>;
+                        Box::new(Sphere::new(center, 0.2, material_lambertian)) as Box<dyn Hittable>
                     } else if choose_material_random < 0.8 {
                         // Metal
                         let material_metal = Box::new(Metal::new(
@@ -72,13 +71,11 @@ fn main() {
                             ),
                             rand::thread_rng().r#gen::<f64>(),
                         ));
-                        return Box::new(Sphere::new(center, 0.2, material_metal))
-                            as Box<dyn Hittable>;
+                        Box::new(Sphere::new(center, 0.2, material_metal)) as Box<dyn Hittable>
                     } else {
                         // Glass
                         let material_glass = Box::new(Dielectric::new(1.33));
-                        return Box::new(Sphere::new(center, 0.2, material_glass))
-                            as Box<dyn Hittable>;
+                        Box::new(Sphere::new(center, 0.2, material_glass)) as Box<dyn Hittable>
                     }
                 })
                 .collect::<Vec<Box<dyn Hittable>>>()

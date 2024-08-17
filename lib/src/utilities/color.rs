@@ -51,7 +51,7 @@ impl Color {
         if linear_component > 0.0 {
             return linear_component.sqrt();
         }
-        return 0.0;
+        0.0
     }
 }
 
