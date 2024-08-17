@@ -5,6 +5,7 @@ const IMAGE_WIDTH: i32 = 1600;
 const SAMPLES_PER_PIXEL: i32 = 200;
 const MAX_DEPTH: i32 = 80;
 const VERTICAL_FOV: f64 = 40.0;
+
 fn main() {
     // https://raytracing.github.io/books/RayTracingInOneWeekend.html
     let mut world: Vec<Box<dyn Hittable>> = Vec::new();

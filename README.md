@@ -1,4 +1,4 @@
-# RustRayTracer
+# RustyRayTracer
 
 <!-- See: https://github.com/KPMGE/KPMGE/blob/main/README.md -->
 <table align="center">

@@ -25,6 +25,8 @@ impl<'a> HitRecord<'a> {
             material,
         }
     }
+    /// Sets the hit record normal vector.
+    /// The parameter `outward_normal` is assumed to have unit length
     pub fn set_face_normal(
         ray: Ray,
         outward_normal: Vector3,
@@ -32,8 +34,6 @@ impl<'a> HitRecord<'a> {
         material: &'a dyn Material,
         parameter: f64,
     ) -> Self {
-        // Sets the hit record normal vector.
-        // NOTE: the parameter `outward_normal` is assumed to have unit length
         let is_face_front = ray.get_direction().dot_prod(outward_normal) < 0.0;
         let normal = match is_face_front {
             true => outward_normal,

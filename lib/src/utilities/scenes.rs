@@ -9,8 +9,7 @@ use super::{
     point::Point3,
 };
 
-const NUMBER_BALLS: i32 = 5;
-
+const NUMBER_BALLS: i32 = 7;
 const SCENE_FILE_PATH: &str = "scene_data.json";
 
 fn translate_color_to_scale(color_component: f64) -> f64 {
@@ -71,9 +70,6 @@ pub fn generate_scene(world: &mut Vec<Box<dyn Hittable>>) {
         .collect();
 
     world.extend(spheres_scene);
-    // If you don't need to use spheres_scene after pushing its contents to world, you can move the entire vector.
-    // Explanation: world.extend(spheres_scene) moves the contents of spheres_scene into world. The extend method consumes the vector, avoiding the need for cloning or referencing, and effectively transfers ownership of each Box<dyn Hittable> to world.
-    // Use moving (via extend) if you want to transfer ownership and don't need to use spheres_scene afterward, which is more efficient because it avoids unnecessary duplication.
 
     // Scene - big balls with Glass material
     let material_glass = Box::new(Dielectric::new(1.0 / 1.55));

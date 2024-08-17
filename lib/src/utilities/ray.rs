@@ -1,8 +1,5 @@
 use super::{point::Point3, vector3::Vector3};
 
-/// The Ray Class
-///
-
 #[derive(Clone, Copy, Default)]
 pub struct Ray {
     origin: Point3,

@@ -1,6 +1,5 @@
-use rayon::prelude::*;
-
 use rand::Rng;
+use rayon::prelude::*;
 
 use super::{
     color::Color,

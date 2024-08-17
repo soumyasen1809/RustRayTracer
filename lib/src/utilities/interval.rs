@@ -6,7 +6,6 @@ pub struct Interval {
 impl Interval {
     // https://stackoverflow.com/questions/26549480/how-do-i-declare-a-static-field-in-a-struct-in-rust
     pub const fn new(min: f64, max: f64) -> Self {
-        // Needs to add it as const fn, since EMPTY const needs a const function
         Self { min, max }
     }
 

@@ -1,9 +1,5 @@
-use std::ops::{Add, AddAssign, Div, Mul, MulAssign, Neg, Sub};
-
 use rand::Rng;
-
-/// The vec3 Class
-///
+use std::ops::{Add, AddAssign, Div, Mul, MulAssign, Neg, Sub};
 
 #[derive(Clone, Copy)]
 pub struct Vector3 {
