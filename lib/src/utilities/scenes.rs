@@ -16,6 +16,69 @@ fn translate_color_to_scale(color_component: f64) -> f64 {
     color_component.clamp(0.0, 256.0) / 256.0
 }
 
+fn read_from_json(world: &mut Vec<Box<dyn Hittable>>) {
+    let scenes_file_path = SCENE_FILE_PATH.to_owned();
+    let file = fs::File::open(scenes_file_path).expect("Could not open file");
+    let json_data: HashMap<String, Vec<HashMap<String, serde_json::Value>>> =
+        serde_json::from_reader(file).expect("File is not proper JSON");
+    let json_parse_ball = json_data.get("Ball").expect("Can't read Ball data");
+
+    for ball in json_parse_ball.iter() {
+        {
+            if let Some(material_str) = ball["material"]["type"].as_str() {
+                if material_str == "lambertian" {
+                    let color_obj = Color::new(
+                        translate_color_to_scale(ball["color"]["r"].as_f64().unwrap_or_default()),
+                        translate_color_to_scale(ball["color"]["g"].as_f64().unwrap_or_default()),
+                        translate_color_to_scale(ball["color"]["b"].as_f64().unwrap_or_default()),
+                    );
+                    let material_obj = Box::new(Lambertian::new(color_obj));
+
+                    let center_obj = Point3::new(
+                        ball["center"]["x"].as_f64().unwrap_or_default(),
+                        ball["center"]["y"].as_f64().unwrap_or_default(),
+                        ball["center"]["z"].as_f64().unwrap_or_default(),
+                    );
+                    let radius_obj = ball["radius"].as_f64().unwrap_or_default();
+
+                    world.push(Box::new(Sphere::new(center_obj, radius_obj, material_obj)));
+                } else if material_str == "metal" {
+                    let color_obj = Color::new(
+                        translate_color_to_scale(ball["color"]["r"].as_f64().unwrap_or_default()),
+                        translate_color_to_scale(ball["color"]["g"].as_f64().unwrap_or_default()),
+                        translate_color_to_scale(ball["color"]["b"].as_f64().unwrap_or_default()),
+                    );
+                    let fuzz_obj = ball["material"]["fuzz"].as_f64().unwrap_or_default();
+                    let material_obj = Box::new(Metal::new(color_obj, fuzz_obj));
+
+                    let center_obj = Point3::new(
+                        ball["center"]["x"].as_f64().unwrap_or_default(),
+                        ball["center"]["y"].as_f64().unwrap_or_default(),
+                        ball["center"]["z"].as_f64().unwrap_or_default(),
+                    );
+                    let radius_obj = ball["radius"].as_f64().unwrap_or_default();
+
+                    world.push(Box::new(Sphere::new(center_obj, radius_obj, material_obj)));
+                } else if material_str == "dielectric" {
+                    let rf_index_obj = ball["material"]["ref_idx"].as_f64().unwrap_or_default();
+                    let material_obj = Box::new(Dielectric::new(rf_index_obj));
+
+                    let center_obj = Point3::new(
+                        ball["center"]["x"].as_f64().unwrap_or_default(),
+                        ball["center"]["y"].as_f64().unwrap_or_default(),
+                        ball["center"]["z"].as_f64().unwrap_or_default(),
+                    );
+                    let radius_obj = ball["radius"].as_f64().unwrap_or_default();
+
+                    world.push(Box::new(Sphere::new(center_obj, radius_obj, material_obj)));
+                } else {
+                    println!("Wrong Material");
+                }
+            }
+        }
+    }
+}
+
 pub fn generate_scene(world: &mut Vec<Box<dyn Hittable>>) {
     // World
 
@@ -101,68 +164,6 @@ pub fn generate_scene(world: &mut Vec<Box<dyn Hittable>>) {
         material_metal,
     )));
 
-    // -------------------------FROM JSON-----------------------------
-
-    let scenes_file_path = SCENE_FILE_PATH.to_owned();
-    let file = fs::File::open(scenes_file_path).expect("Could not open file");
-    let json_data: HashMap<String, Vec<HashMap<String, serde_json::Value>>> =
-        serde_json::from_reader(file).expect("File is not proper JSON");
-    let json_parse_ball = json_data.get("Ball").expect("Can't read Ball data");
-
-    for ball in json_parse_ball.iter() {
-        {
-            if let Some(material_str) = ball["material"]["type"].as_str() {
-                if material_str == "lambertian" {
-                    let color_obj = Color::new(
-                        translate_color_to_scale(ball["color"]["r"].as_f64().unwrap_or_default()),
-                        translate_color_to_scale(ball["color"]["g"].as_f64().unwrap_or_default()),
-                        translate_color_to_scale(ball["color"]["b"].as_f64().unwrap_or_default()),
-                    );
-                    let material_obj = Box::new(Lambertian::new(color_obj));
-
-                    let center_obj = Point3::new(
-                        ball["center"]["x"].as_f64().unwrap_or_default(),
-                        ball["center"]["y"].as_f64().unwrap_or_default(),
-                        ball["center"]["z"].as_f64().unwrap_or_default(),
-                    );
-                    let radius_obj = ball["radius"].as_f64().unwrap_or_default();
-
-                    world.push(Box::new(Sphere::new(center_obj, radius_obj, material_obj)));
-                } else if material_str == "metal" {
-                    let color_obj = Color::new(
-                        translate_color_to_scale(ball["color"]["r"].as_f64().unwrap_or_default()),
-                        translate_color_to_scale(ball["color"]["g"].as_f64().unwrap_or_default()),
-                        translate_color_to_scale(ball["color"]["b"].as_f64().unwrap_or_default()),
-                    );
-                    let fuzz_obj = ball["material"]["fuzz"].as_f64().unwrap_or_default();
-                    let material_obj = Box::new(Metal::new(color_obj, fuzz_obj));
-
-                    let center_obj = Point3::new(
-                        ball["center"]["x"].as_f64().unwrap_or_default(),
-                        ball["center"]["y"].as_f64().unwrap_or_default(),
-                        ball["center"]["z"].as_f64().unwrap_or_default(),
-                    );
-                    let radius_obj = ball["radius"].as_f64().unwrap_or_default();
-
-                    world.push(Box::new(Sphere::new(center_obj, radius_obj, material_obj)));
-                } else if material_str == "dielectric" {
-                    let rf_index_obj = ball["material"]["ref_idx"].as_f64().unwrap_or_default();
-                    let material_obj = Box::new(Dielectric::new(rf_index_obj));
-
-                    let center_obj = Point3::new(
-                        ball["center"]["x"].as_f64().unwrap_or_default(),
-                        ball["center"]["y"].as_f64().unwrap_or_default(),
-                        ball["center"]["z"].as_f64().unwrap_or_default(),
-                    );
-                    let radius_obj = ball["radius"].as_f64().unwrap_or_default();
-
-                    world.push(Box::new(Sphere::new(center_obj, radius_obj, material_obj)));
-                } else {
-                    println!("Wrong Material");
-                }
-            }
-        }
-    }
-
-    // ------------------------------------------------------
+    // Scene - Load from Json
+    read_from_json(world);
 }
