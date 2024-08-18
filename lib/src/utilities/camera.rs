@@ -1,6 +1,5 @@
-use rayon::prelude::*;
-
 use rand::Rng;
+use rayon::prelude::*;
 
 use super::{
     color::Color,
@@ -58,7 +57,7 @@ impl Camera {
 
         // Render and write to file
         let file_path = "image_test.ppm";
-        let mut file = File::create(&file_path).unwrap();
+        let mut file = File::create(file_path).unwrap();
         writeln!(file, "P3\n{} {}\n255", self.image_width, self.image_height).unwrap();
 
         let pixel_color_vec: Vec<Color> = (0..self.image_height)
@@ -75,7 +74,7 @@ impl Camera {
                                 Self::ray_color(ray_sent, self.max_depth, &world[..])
                             })
                             .sum(); // need to implement sum trait for Color
-                        return pixel_color; // Return the Color from the map closure
+                        pixel_color // Return the Color from the map closure
                     })
                     .collect::<Vec<Color>>() // Collect the inner Vec<Color>
             })
@@ -83,9 +82,8 @@ impl Camera {
 
         for pixel in pixel_color_vec.iter() {
             let write_res = (*pixel * self.pixel_samples_scale).write_color(&mut file);
-            match write_res {
-                Err(e) => println!("Error in writing result to file: {}", e),
-                _ => (), // The () is just the unit value, so nothing will happen
+            if let Err(e) = write_res {
+                println!("Error in writing result to file: {}", e)
             }
         }
 
@@ -137,7 +135,7 @@ impl Camera {
             return Color::default();
         }
 
-        if let Some(hit) = world.hit(ray, Interval::new(0.001, std::f64::INFINITY)) {
+        if let Some(hit) = world.hit(ray, Interval::new(0.001, f64::INFINITY)) {
             if let Some(scatter) = hit.material.scatter(ray, &hit) {
                 let Scatter {
                     scattered_ray,

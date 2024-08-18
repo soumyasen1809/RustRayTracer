@@ -1,9 +1,6 @@
 use super::{point::Point3, vector3::Vector3};
 
-/// The Ray Class
-///
-
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Default)]
 pub struct Ray {
     origin: Point3,
     direction: Vector3,
@@ -24,14 +21,5 @@ impl Ray {
     }
     pub fn get_direction(&self) -> Vector3 {
         self.direction
-    }
-}
-
-impl Default for Ray {
-    fn default() -> Self {
-        Self {
-            origin: Point3::default(),
-            direction: Vector3::default(),
-        }
     }
 }

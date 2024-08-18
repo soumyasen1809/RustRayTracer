@@ -7,18 +7,25 @@ authors = ["Sen"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
+# Your dependencies here
 lib ={ path = "lib"}    # needed for the tests to work
-rand="0.3.14"
-rayon = "1.10.0"
+
+[dev-dependencies]
+# Dependencies needed only for testing
+# mockall = "0.13.0"
 
 [[bin]]
 name = "bin"
 path = "src/main.rs"
 
+[[test]]
+name = "test"
+path = "tests/common_config.rs"
+
 # Check https://rust-classes.com/chapter_4_3
 [workspace]
 members = [
-    "lib",
+    "lib"   # DONOT include the tests directory here and DONOT create a Cargo.toml file in the tests directory
 ]
 resolver = "2"
 

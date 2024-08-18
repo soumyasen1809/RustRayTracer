@@ -1,9 +1,5 @@
-use std::ops::{Add, AddAssign, Div, Mul, MulAssign, Neg, Sub};
-
 use rand::Rng;
-
-/// The vec3 Class
-///
+use std::ops::{Add, AddAssign, Div, Mul, MulAssign, Neg, Sub};
 
 #[derive(Clone, Copy)]
 pub struct Vector3 {
@@ -97,7 +93,7 @@ impl Vector3 {
     }
 
     pub fn reflection(&self, normal_vec: &Self) -> Self {
-        return *self - ((*normal_vec * (self.dot_prod(*normal_vec))) * 2.0);
+        *self - ((*normal_vec * (self.dot_prod(*normal_vec))) * 2.0)
     }
 
     pub fn refraction(&self, normal_vec: &Self, ratio_refractive_index: f64) -> Self {

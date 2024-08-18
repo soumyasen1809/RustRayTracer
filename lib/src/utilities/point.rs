@@ -1,8 +1,6 @@
-use super::vector3::Vector3;
 use std::ops::{Add, Neg, Sub};
 
-/// The Point3 Class
-///
+use super::vector3::Vector3;
 
 #[derive(Clone, Copy)]
 pub struct Point3 {
